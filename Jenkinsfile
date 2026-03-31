@@ -15,9 +15,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-        docker stop $(docker ps -q --filter "ancestor=my-nginx-app") || true
-        docker rm $(docker ps -aq --filter "ancestor=my-nginx-app") || true
-        docker run -d -p 8080:80 my-nginx-app
-        '''
+                # Stop old container if running
+                docker stop $(docker ps -q --filter "ancestor=my-nginx-app") || true
+                docker rm $(docker ps -aq --filter "ancestor=my-nginx-app") || true
+
+                # Run new container
+                docker run -d -p 8080:80 my-nginx-app
+                '''
+            }
+        }
     }
 }
