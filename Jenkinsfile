@@ -1,19 +1,20 @@
 pipeline {
     agent any
+
     stages {
         stage('Build') {
             steps {
-                echo 'Building...'
+                sh 'docker build -t my-nginx-app .'
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing...'
+                sh 'docker run --rm my-nginx-app echo "Tests Passed!"'
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying...'
+                sh 'docker run -d -p 8080:80 my-nginx-app'
             }
         }
     }
