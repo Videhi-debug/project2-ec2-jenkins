@@ -15,13 +15,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                # Stop old container if running
-                docker stop $(docker ps -q --filter "ancestor=my-nginx-app") || true
-                docker rm $(docker ps -aq --filter "ancestor=my-nginx-app") || true
+        # Stop and remove any container using port 8080
+        docker ps -q --filter "publish=8080" | xargs -r docker stop
+        docker ps -aq --filter "publish=8080" | xargs -r docker rm
 
-                # Run new container
-                docker run -d -p 8080:80 my-nginx-app
-                '''
+        # Run new container
+        docker run -d -p 8080:80 my-nginx-app
+        '''
             }
         }
     }
