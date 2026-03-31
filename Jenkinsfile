@@ -14,8 +14,10 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'docker run -d -p 8080:80 my-nginx-app'
-            }
-        }
+                sh '''
+        docker stop $(docker ps -q --filter "ancestor=my-nginx-app") || true
+        docker rm $(docker ps -aq --filter "ancestor=my-nginx-app") || true
+        docker run -d -p 8080:80 my-nginx-app
+        '''
     }
 }
